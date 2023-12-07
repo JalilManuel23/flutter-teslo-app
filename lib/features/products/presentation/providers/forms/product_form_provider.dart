@@ -1,4 +1,79 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:formz/formz.dart';
+import 'package:teslo_shop/features/products/domain/domain.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
+
+class ProductFormNotifier extends StateNotifier<ProductFormState> {
+  
+  final void Function( Map<String, dynamic> productLike )? onSubmitCallback;
+
+  ProductFormNotifier({
+    this.onSubmitCallback,
+    required Product product
+  }) : super (
+    ProductFormState(
+      id: product.id,
+      slug: Slug.dirty(product.slug) ,
+      title: Title.dirty(product.title),
+      price: Price.dirty(product.price),
+      inStock: Stock.dirty(product.stock),
+      size: product.sizes,
+      gender: product.gender,
+      description: product.description,
+      tags: product.tags.join(', '),
+      images: product.images,
+    )
+  );
+
+  void onTitleChanged( String value ) {
+    state = state.copyWith(
+      title: Title.dirty(value),
+      isFormValid: Formz.validate([
+        Title.dirty(value),
+        Slug.dirty(state.slug.value),
+        Price.dirty(state.price.value),
+        Stock.dirty(state.inStock.value)
+      ])
+    );
+  }
+
+  void onSlugChanged( String value ) {
+    state = state.copyWith(
+      slug: Slug.dirty(value),
+      isFormValid: Formz.validate([
+        Title.dirty(state.title.value),
+        Slug.dirty(value),
+        Price.dirty(state.price.value),
+        Stock.dirty(state.inStock.value)
+      ])
+    );
+  }
+
+  void onPriceChanged( double value ) {
+    state = state.copyWith(
+      price: Price.dirty(value),
+      isFormValid: Formz.validate([
+        Title.dirty(state.title.value),
+        Slug.dirty(state.slug.value),
+        Price.dirty(value),
+        Stock.dirty(state.inStock.value)
+      ])
+    );
+  }
+
+  void onStockChanged( int value ) {
+    state = state.copyWith(
+      inStock: Stock.dirty(value),
+      isFormValid: Formz.validate([
+        Title.dirty(state.title.value),
+        Slug.dirty(state.slug.value),
+        Price.dirty(state.price.value),
+        Stock.dirty(value)
+      ])
+    );
+  }
+
+}
 
 class ProductFormState {
 
