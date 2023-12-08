@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:teslo_shop/config/constants/environment.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
@@ -24,6 +25,31 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
       images: product.images,
     )
   );
+
+  Future<bool> onFormSubmit() async {
+    _touchEverything();
+
+    if(!state.isFormValid) return false;
+
+    if(onSubmitCallback ==  null) return false;
+
+    final productLike = {
+      'id': state.id,
+      'title': state.title.value,
+      'price': state.price.value,
+      'description': state.description,
+      'slug': state.slug.value,
+      'stock': state.inStock.value,
+      'sizes': state.size,
+      'gender': state.gender,
+      'tags': state.tags.split(','),
+      'images': state.images.map(
+        (image) => image.replaceAll('${Environment.apiUrl}/files/product/', '')
+      ).toList()
+    };
+
+    return true;
+  }
 
   void onTitleChanged( String value ) {
     state = state.copyWith(
@@ -70,6 +96,41 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         Price.dirty(state.price.value),
         Stock.dirty(value)
       ])
+    );
+  }
+
+  void _touchEverything() {
+    state = state.copyWith(
+      isFormValid: Formz.validate([
+        Title.dirty(state.title.value),
+        Slug.dirty(state.slug.value),
+        Price.dirty(state.price.value),
+        Stock.dirty(state.inStock.value),
+      ])
+    );
+  }
+
+  void onSizedChanged(List<String> sizes) {
+    state = state.copyWith(
+      size: sizes
+    );
+  }
+
+  void onGenderChange(String gender) {
+    state = state.copyWith(
+      gender: gender
+    );
+  }
+
+  void onDescriptionChange(String description) {
+    state = state.copyWith(
+      description: description
+    );
+  }
+
+  void onTagsChange(String tags) {
+    state = state.copyWith(
+      tags: tags
     );
   }
 
