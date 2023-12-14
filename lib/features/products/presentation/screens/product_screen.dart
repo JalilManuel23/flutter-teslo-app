@@ -109,7 +109,7 @@ class _ProductInformation extends ConsumerWidget {
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             initialValue: productForm.price.value.toString(),
             onChanged: (value) => ref.read( productFormProvider(product).notifier )
-              .onPriceChanged( double.parse(value) ),
+              .onPriceChanged( double.parse(value) ?? -1 ),
             errorMessage: productForm.price.errorMessage,
           ),
 

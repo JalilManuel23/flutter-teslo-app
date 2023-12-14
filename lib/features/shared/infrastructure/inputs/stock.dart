@@ -1,7 +1,7 @@
 import 'package:formz/formz.dart';
 
 // Define input validation errors
-enum StockError { empty, value }
+enum StockError { empty, value, format }
 
 // Extend FormzInput and provide the input type and error type.
 class Stock extends FormzInput<int, StockError> {
@@ -17,6 +17,7 @@ class Stock extends FormzInput<int, StockError> {
 
     if ( displayError == StockError.empty ) return 'El campo es requerido';
     if ( displayError == StockError.value ) return 'Tiene que se cero o mayor';
+    if ( displayError == StockError.format ) return 'Tiene que ser un número mayor o igual a cero';
 
     return null;
   }
