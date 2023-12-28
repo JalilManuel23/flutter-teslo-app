@@ -27,7 +27,7 @@ class ProductScreen extends ConsumerWidget {
     final productState = ref.watch(productProvider(productId));
 
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of( context ).unfocus(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Editar producto'),
